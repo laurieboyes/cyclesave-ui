@@ -1,4 +1,4 @@
-function redirectToGoogleSignIn () {
+export function signIn () {
 	const form = document.createElement('form');
 	form.setAttribute('method', 'GET');
 	form.setAttribute('action', 'https://accounts.google.com/o/oauth2/v2/auth');
@@ -33,25 +33,28 @@ function redirectToGoogleSignIn () {
 	form.submit();
 }
 
-export function validateAndStoreToken (accessToken) {
+export function validateTokenAndStore (accessToken) {
 	return fetch(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`)
 		.then(res => res.json())
-		.then(tokenDeets => {
-			console.log('tokenDeets', tokenDeets);
+		.then(tokenDetails => {
+			localStorage.setItem('authDetails', JSON.stringify({
+				accessToken,
+				email: tokenDetails.email,
+				expiry: tokenDetails.exp * 1000
+			}));
 		})
 }
 
-const fakeAuth = {
-	isAuthenticated: false,
+export function isAuthenticated (accessToken) {
+	const authDetails = JSON.parse(localStorage.getItem('authDetails') || '{}');
+	return Boolean(+authDetails.expiry || 0 > new Date().getTime());
+}
 
-	authenticate (cb) {
-		redirectToGoogleSignIn();
-	},
-
-	signout (cb) {
-		this.isAuthenticated = false;
-		setTimeout(cb, 100);
+export function getAuthDetails (accessToken) {
+	const authDetails = JSON.parse(localStorage.getItem('authDetails') || '{}');
+	if (authDetails.expiry || 0 > new Date().getTime()) {
+		return authDetails;
+	} else {
+		throw Error('Can\'t get details: Auth expired or missing');
 	}
-};
-
-export default fakeAuth;
+}
