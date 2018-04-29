@@ -5,7 +5,7 @@ export function signIn () {
 
 
 	const clientId = '447838384773-9n5pf96vipeuedm8ls2und2uu0ekteqt.apps.googleusercontent.com';
-	const redirectUrl = 'http://localhost:1234/auth-redirect'; // todo make env agnostic
+	const redirectUrl = `${window.location.origin}/auth-redirect`;
 
 	const scope = [
 		'https://www.googleapis.com/auth/fitness.activity.read',
