@@ -1,6 +1,8 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 export default () => (
-	<h2>Home</h2>
+	<div>
+		<h2>Home</h2>
+	</div>
 );
